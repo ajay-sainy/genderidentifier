@@ -7,8 +7,15 @@ import os
 from genderPredictor import genderPredictor
 
 class MainHandler(tornado.web.RequestHandler):
+    def set_default_headers(self):
+        print ("setting headers!!!")
+        self.set_header("Access-Control-Allow-Origin", "*")
+        self.set_header("Access-Control-Allow-Headers", "x-requested-with")
+        self.set_header('Access-Control-Allow-Methods', 'POST, GET, OPTIONS')
+        
     def get(self,name):
         print(name)
+        self.set_header("Access-Control-Allow-Origin", "*")
         gp = genderPredictor()        
         self.write(gp.predict(name))
 

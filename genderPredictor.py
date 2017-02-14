@@ -81,5 +81,5 @@ class genderPredictor():
     def predict(self,name):
         accuracy=self.trainAndTest()        
         dist = self.classify(name)  
-        return '{} is classified as {}'.format(name, dist)
+        return dist
     
