@@ -2,6 +2,9 @@ from datetime import date
 import tornado.escape
 import tornado.ioloop
 import tornado.web
+import os
+import socket
+
  
 class VersionHandler(tornado.web.RequestHandler):
     def get(self):
@@ -22,5 +25,7 @@ application = tornado.web.Application([
 ])
  
 if __name__ == "__main__":
-    application.listen(8888)
+    port = os.environ.get("PORT",7564)
+    application.listen(port)    
     tornado.ioloop.IOLoop.instance().start()
+    
