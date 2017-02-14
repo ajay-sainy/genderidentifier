@@ -1,31 +1,30 @@
-from datetime import date
-import tornado.escape
-import tornado.ioloop
+from tornado import httpserver
+from tornado import gen
+from tornado.ioloop import IOLoop
+import sqlite3 as sqlite
 import tornado.web
 import os
-import socket
+from genderPredictor import genderPredictor
 
- 
-class VersionHandler(tornado.web.RequestHandler):
-    def get(self):
-        response = { 'version': '3.5.1',
-                     'last_build':  date.today().isoformat() }
-        self.write(response)
- 
-class GetGameByIdHandler(tornado.web.RequestHandler):
-    def get(self, id):
-        response = { 'id': int(id),
-                     'name': 'Crazy Game',
-                     'release_date': date.today().isoformat() }
-        self.write(response)
- 
-application = tornado.web.Application([
-    (r"/getgamebyid/([0-9]+)", GetGameByIdHandler),
-    (r"/version", VersionHandler)
-])
- 
-if __name__ == "__main__":
-    port = os.environ.get("PORT",7564)
-    application.listen(port)    
-    tornado.ioloop.IOLoop.instance().start()
+class MainHandler(tornado.web.RequestHandler):
+    def get(self,name):
+        print(name)
+        gp = genderPredictor()        
+        self.write(gp.predict(name))
+
+class Application(tornado.web.Application):
+    def __init__(self):
+        handlers = [
+            (r"/([^/]+)", MainHandler),            
+        ]
+        tornado.web.Application.__init__(self, handlers)
+
+def main():
     
+    app = Application()
+    port = os.environ.get("PORT",7531)
+    app.listen(port)
+    IOLoop.instance().start()
+
+if __name__ == '__main__':
+    main()
